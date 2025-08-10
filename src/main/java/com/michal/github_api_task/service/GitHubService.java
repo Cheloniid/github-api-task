@@ -4,7 +4,6 @@ import com.michal.github_api_task.exception.UserNotFoundException;
 import com.michal.github_api_task.model.BranchDTO;
 import com.michal.github_api_task.model.RepoDTO;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -13,12 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.michal.github_api_task.utilities.Constants.GITHUB_REPO_URL;
+import static com.michal.github_api_task.utilities.Constants.GITHUB_BRANCH_URL;
+
 public class GitHubService {
 
-    //https://api.github.com/users/USERNAME/repos
-
     private List<RepoDTO> getReposFromGithub(String userName) {
-        String url = String.format("https://api.github.com/users/%s/repos", userName);
+
+        String url = GITHUB_REPO_URL.replace("USERNAME", userName);
         List<RepoDTO> reposDTO = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
@@ -52,10 +53,11 @@ public class GitHubService {
     }
 
     private List<RepoDTO> updateRepoBranches(List<RepoDTO> repos) {
+
         for (RepoDTO repoDTO : repos) {
-            String url =
-                    String.format("https://api.github.com/repos/%s/%s/branches",
-                            repoDTO.getOwnerLogin(), repoDTO.getRepoName());
+            String url = GITHUB_BRANCH_URL
+                    .replace("USERNAME", repoDTO.getOwnerLogin())
+                    .replace("REPOSITORY", repoDTO.getRepoName());
 
             List<BranchDTO> branchesDTO = new ArrayList<>();
 
@@ -72,7 +74,6 @@ public class GitHubService {
                 branchDTO.setLastCommitSHA(commitSHA);
 
                 branchesDTO.add(branchDTO);
-
             }
             repoDTO.setBranches(branchesDTO);
         }
@@ -80,6 +81,7 @@ public class GitHubService {
     }
 
     public List<RepoDTO> getReposWithBranches(String userName) {
+
         return updateRepoBranches(getReposFromGithub(userName));
     }
 }

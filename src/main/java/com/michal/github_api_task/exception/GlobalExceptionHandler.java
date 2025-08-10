@@ -12,7 +12,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException exception){
+    public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException exception) {
+
         Map<String, String> response = new HashMap<>();
         response.put("status", "404");
         response.put("message", exception.getMessage());

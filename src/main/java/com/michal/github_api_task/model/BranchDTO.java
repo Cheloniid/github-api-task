@@ -1,6 +1,7 @@
 package com.michal.github_api_task.model;
 
 public class BranchDTO {
+
     private String name;
     private String lastCommitSHA;
 
